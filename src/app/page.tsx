@@ -253,6 +253,7 @@ export default function Portfolio() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -262,6 +263,21 @@ export default function Portfolio() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close lightbox on Escape key & prevent body scroll when open
+  useEffect(() => {
+    if (lightboxOpen) {
+      document.body.style.overflow = "hidden";
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") setLightboxOpen(false);
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.body.style.overflow = "";
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [lightboxOpen]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -279,12 +295,20 @@ export default function Portfolio() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <a
-              href="#"
-              className="text-xl font-bold bg-gradient-to-r from-accent to-purple-400 bg-clip-text text-transparent"
+            <button
+              onClick={() => setLightboxOpen(true)}
+              className="flex items-center gap-2 group focus:outline-none cursor-pointer"
+              aria-label="View profile photo"
             >
-              {"<SK />"}
-            </a>
+              <img
+                src="/sumeet kumar fullstack developer.webp"
+                alt="Sumeet Kumar"
+                className="w-9 h-9 rounded-full object-cover border-2 border-accent/50 group-hover:border-accent transition-all duration-300 group-hover:shadow-lg group-hover:shadow-accent/25"
+              />
+              <span className="text-xl font-bold bg-gradient-to-r from-accent to-purple-400 bg-clip-text text-transparent">
+                {"<SK />"}
+              </span>
+            </button>
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-1">
@@ -396,12 +420,12 @@ export default function Portfolio() {
               Get In Touch
             </a>
           </div>
+        </div>
 
-          {/* Scroll indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-            <div className="w-6 h-10 border-2 border-muted/30 rounded-full flex justify-center">
-              <div className="w-1.5 h-3 bg-accent/50 rounded-full mt-2 animate-pulse" />
-            </div>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-muted/30 rounded-full flex justify-center">
+            <div className="w-1.5 h-3 bg-accent/50 rounded-full mt-2 animate-pulse" />
           </div>
         </div>
       </section>
@@ -683,6 +707,41 @@ export default function Portfolio() {
         >
           <ChevronUpIcon />
         </button>
+      )}
+
+      {/* ─── Lightbox Modal ──────────────────────────────────────── */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fadeIn"
+          onClick={() => setLightboxOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Profile photo lightbox"
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setLightboxOpen(false)}
+            className="absolute top-6 right-6 p-2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-all duration-200 z-10"
+            aria-label="Close lightbox"
+          >
+            <CloseIcon />
+          </button>
+
+          {/* Image Container */}
+          <div
+            className="relative max-w-lg w-[90vw] max-h-[85vh] animate-scaleIn"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src="/sumeet kumar fullstack developer.webp"
+              alt="Sumeet Kumar"
+              className="w-full h-auto rounded-2xl shadow-2xl shadow-black/50 border border-white/10"
+            />
+            <p className="text-center text-white/80 text-sm mt-4 font-medium">
+              Sumeet Kumar — Full Stack Developer
+            </p>
+          </div>
+        </div>
       )}
     </>
   );
