@@ -641,8 +641,8 @@ export default function Portfolio() {
             <ContactCard
               icon={<PhoneIcon />}
               label="Phone"
-              value="+91 78891 02883"
-              href="tel:+917889102883"
+              value="+91 78374 29136"
+              href="tel:+917837429136"
             />
             <ContactCard
               icon={<LinkedInIcon />}
